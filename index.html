@@ -4,20 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>工作计划看板</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20260710">
 </head>
 <body>
+  <a class="skip-link" href="#mainContent">跳到主要内容</a>
   <div class="app-shell">
     <header class="topbar">
       <div>
-        <p class="eyebrow">Work Plan Dashboard</p>
+        <p class="eyebrow">工作计划 · 日程看板</p>
         <h1>工作计划看板</h1>
       </div>
       <div class="topbar-actions">
         <button id="todayBtn" class="icon-button wide" type="button" title="回到今天">今天</button>
         <button id="exportBtn" class="button" type="button">导出 JSON</button>
-        <label class="button ghost" for="importInput">导入 JSON</label>
-        <input id="importInput" class="sr-only" type="file" accept="application/json">
+        <label class="button ghost import-button">
+          <span>导入 JSON</span>
+          <input id="importInput" class="sr-only" type="file" accept="application/json">
+        </label>
         <button id="clearBtn" class="button danger" type="button">清空</button>
       </div>
     </header>
@@ -49,7 +52,7 @@
       </article>
     </section>
 
-    <main class="layout">
+    <main id="mainContent" class="layout" tabindex="-1">
       <section class="panel calendar-panel" aria-label="月历">
         <div class="panel-head">
           <button id="prevMonthBtn" class="icon-button" type="button" aria-label="上个月">‹</button>
@@ -65,7 +68,6 @@
       <section class="panel focus-panel" aria-label="选中日期任务">
         <div class="panel-head stack-head">
           <div>
-            <p class="eyebrow">Selected Day</p>
             <h2 id="selectedLabel">-</h2>
           </div>
           <span id="selectedSummary" class="summary-pill">0 项</span>
@@ -94,19 +96,18 @@
     <section class="panel workbench" aria-label="任务录入和清单">
       <div class="panel-head workbench-head">
         <div>
-          <p class="eyebrow">Task Table</p>
           <h2>任务清单 <span id="tableDateLabel" class="inline-date">-</span></h2>
         </div>
         <div class="filters">
-          <input id="searchInput" type="search" placeholder="搜索工作规划或备注">
-          <select id="priorityFilter">
+          <input id="searchInput" type="search" placeholder="搜索工作规划或备注" aria-label="搜索任务">
+          <select id="priorityFilter" aria-label="按重要程度筛选">
             <option value="">全部重要程度</option>
             <option value="重要紧急">重要紧急</option>
             <option value="重要不紧急">重要不紧急</option>
             <option value="紧急不重要">紧急不重要</option>
             <option value="不重要不紧急">不重要不紧急</option>
           </select>
-          <select id="statusFilter">
+          <select id="statusFilter" aria-label="按任务状态筛选">
             <option value="">全部状态</option>
             <option value="pending">未完成</option>
             <option value="completed">已完成</option>
@@ -151,8 +152,8 @@
           <input id="notesInput" type="text" placeholder="进展、负责人、补充说明">
         </label>
         <div class="form-actions">
-          <button id="cancelEditBtn" class="button ghost" type="button">取消编辑</button>
           <button class="button primary" type="submit">保存任务</button>
+          <button id="cancelEditBtn" class="button ghost" type="button">取消编辑</button>
         </div>
       </form>
 

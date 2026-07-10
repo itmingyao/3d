@@ -169,8 +169,8 @@ function renderCalendar() {
     if (key === state.selectedDate) classes.push('selected');
 
     const counts = [];
-    if (planned) counts.push(`<span>S${planned}</span>`);
-    if (due) counts.push(`<span>D${due}</span>`);
+    if (planned) counts.push(`<span>始${planned}</span>`);
+    if (due) counts.push(`<span>止${due}</span>`);
 
     cells.push(`
       <button class="${classes.join(' ')}" type="button" data-date="${key}" aria-label="${key}">
@@ -204,7 +204,7 @@ function renderSelectedDay() {
     const tasks = selectedTasks.filter((task) => task.priority === priority);
     elements.lists[priority].innerHTML = tasks.length
       ? tasks.map(renderMiniTask).join('')
-      : '<p class="empty-note">暂无任务</p>';
+      : '<p class="empty-note">此类暂无任务</p>';
   }
 
   document.querySelectorAll('[data-toggle-status]').forEach((button) => {
@@ -242,7 +242,14 @@ function renderTaskTable() {
     .sort(sortTasks);
 
   if (!rows.length) {
-    elements.taskTableBody.innerHTML = '<tr><td colspan="7">当前日期没有匹配的任务。</td></tr>';
+    elements.taskTableBody.innerHTML = `
+      <tr class="empty-row">
+        <td colspan="7">
+          <strong>没有匹配的任务</strong>
+          <span>可调整筛选条件，或在上方新增任务。</span>
+        </td>
+      </tr>
+    `;
     return;
   }
 
