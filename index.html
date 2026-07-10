@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>工作计划看板</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Work Plan Dashboard</p>
+        <h1>工作计划看板</h1>
+      </div>
+      <div class="topbar-actions">
+        <button id="todayBtn" class="icon-button wide" type="button" title="回到今天">今天</button>
+        <button id="exportBtn" class="button" type="button">导出 JSON</button>
+        <label class="button ghost" for="importInput">导入 JSON</label>
+        <input id="importInput" class="sr-only" type="file" accept="application/json">
+        <button id="clearBtn" class="button danger" type="button">清空</button>
+      </div>
+    </header>
+
+    <section class="metrics-grid" aria-label="今日统计">
+      <article class="metric-card">
+        <span>今日开始</span>
+        <strong id="todayStartCount">0</strong>
+      </article>
+      <article class="metric-card warn">
+        <span>今日截止</span>
+        <strong id="todayDueCount">0</strong>
+      </article>
+      <article class="metric-card good">
+        <span>今日完成</span>
+        <strong id="todayDoneCount">0</strong>
+      </article>
+      <article class="metric-card">
+        <span>完成率</span>
+        <strong id="todayRate">0%</strong>
+      </article>
+      <article class="metric-card">
+        <span>合计工作</span>
+        <strong id="totalCount">0</strong>
+      </article>
+      <article class="metric-card danger-card">
+        <span>超期工作</span>
+        <strong id="overdueCount">0</strong>
+      </article>
+    </section>
+
+    <main class="layout">
+      <section class="panel calendar-panel" aria-label="月历">
+        <div class="panel-head">
+          <button id="prevMonthBtn" class="icon-button" type="button" aria-label="上个月">‹</button>
+          <h2 id="monthLabel">-</h2>
+          <button id="nextMonthBtn" class="icon-button" type="button" aria-label="下个月">›</button>
+        </div>
+        <div class="weekday-row" aria-hidden="true">
+          <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+        </div>
+        <div id="calendarGrid" class="calendar-grid" role="grid" aria-label="月份日历"></div>
+      </section>
+
+      <section class="panel focus-panel" aria-label="选中日期任务">
+        <div class="panel-head stack-head">
+          <div>
+            <p class="eyebrow">Selected Day</p>
+            <h2 id="selectedLabel">-</h2>
+          </div>
+          <span id="selectedSummary" class="summary-pill">0 项</span>
+        </div>
+        <div class="priority-board">
+          <section class="priority-column urgent-important">
+            <h3>重要紧急</h3>
+            <div id="listUrgentImportant" class="task-list"></div>
+          </section>
+          <section class="priority-column important">
+            <h3>重要不紧急</h3>
+            <div id="listImportant" class="task-list"></div>
+          </section>
+          <section class="priority-column urgent">
+            <h3>紧急不重要</h3>
+            <div id="listUrgent" class="task-list"></div>
+          </section>
+          <section class="priority-column low">
+            <h3>不重要不紧急</h3>
+            <div id="listLow" class="task-list"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <section class="panel workbench" aria-label="任务录入和清单">
+      <div class="panel-head workbench-head">
+        <div>
+          <p class="eyebrow">Task Table</p>
+          <h2>任务清单 <span id="tableDateLabel" class="inline-date">-</span></h2>
+        </div>
+        <div class="filters">
+          <input id="searchInput" type="search" placeholder="搜索工作规划或备注">
+          <select id="priorityFilter">
+            <option value="">全部重要程度</option>
+            <option value="重要紧急">重要紧急</option>
+            <option value="重要不紧急">重要不紧急</option>
+            <option value="紧急不重要">紧急不重要</option>
+            <option value="不重要不紧急">不重要不紧急</option>
+          </select>
+          <select id="statusFilter">
+            <option value="">全部状态</option>
+            <option value="pending">未完成</option>
+            <option value="completed">已完成</option>
+            <option value="canceled">取消/不做</option>
+          </select>
+        </div>
+      </div>
+
+      <form id="taskForm" class="task-form">
+        <input id="taskIdInput" type="hidden">
+        <label>
+          计划日期
+          <input id="planDateInput" type="date" required>
+        </label>
+        <label class="title-field">
+          工作规划
+          <input id="titleInput" type="text" placeholder="例如：完成 H 项目可行性研究" required>
+        </label>
+        <label>
+          重要程度
+          <select id="priorityInput" required>
+            <option value="重要紧急">重要紧急</option>
+            <option value="重要不紧急">重要不紧急</option>
+            <option value="紧急不重要">紧急不重要</option>
+            <option value="不重要不紧急">不重要不紧急</option>
+          </select>
+        </label>
+        <label>
+          截止日期
+          <input id="dueDateInput" type="date" required>
+        </label>
+        <label>
+          状态
+          <select id="statusInput">
+            <option value="pending">□ 未完成</option>
+            <option value="completed">☑ 已完成</option>
+            <option value="canceled">✘ 取消/不做</option>
+          </select>
+        </label>
+        <label class="notes-field">
+          备注
+          <input id="notesInput" type="text" placeholder="进展、负责人、补充说明">
+        </label>
+        <div class="form-actions">
+          <button id="cancelEditBtn" class="button ghost" type="button">取消编辑</button>
+          <button class="button primary" type="submit">保存任务</button>
+        </div>
+      </form>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>计划日期</th>
+              <th>工作规划</th>
+              <th>重要程度</th>
+              <th>截止日期</th>
+              <th>状态</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="taskTableBody"></tbody>
+        </table>
+      </div>
+
+      <div id="statusBar" class="status-bar" aria-live="polite"></div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
